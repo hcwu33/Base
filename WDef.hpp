@@ -1,5 +1,9 @@
 #pragma once
 
+typedef int BOOL;
+
+#define  FALSE		(0)
+#define  TRUE		(1)
 
 #define W_DATE_TIME_STR_LEN	20
 
@@ -48,3 +52,4 @@ do {\
 #define W_INIT_FAILED() \
 	this->UnInit(); \
 	return false;
+

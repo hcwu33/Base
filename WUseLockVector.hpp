@@ -1,6 +1,6 @@
 #pragma once
 #include "WRecursiveLock.hpp"
-
+#include "WDef.hpp"
 #include <vector>
 using namespace std;
 

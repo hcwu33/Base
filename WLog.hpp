@@ -369,3 +369,4 @@ do \
 { \
 	CWLogger::WriteLog(CWLog::fatal, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
 } while (0);
+

@@ -32,9 +32,9 @@ public:
 		strcpy_s(dest, dest_size, src);
 #else
 		size_t minsize = strlen(src);
-		if (minsize > sizeOfDest-1)//sizeOfDest-1,最后一位必须为‘\0’
+		if (minsize > dest_size-1)//sizeOfDest-1,最后一位必须为‘\0’
 		{
-			minsize = sizeOfDest - 1;
+			minsize = dest_size - 1;
 		}
 
 		memcpy(dest, src, minsize);
@@ -47,7 +47,7 @@ public:
 #ifdef WIN32
 		::wcscpy_s(dest, dest_size, src);
 #else
-		wcscpy(dest, src);
+		::wcscpy(dest, src);
 #endif
 	}
 	template<size_t size>
@@ -56,7 +56,7 @@ public:
 #ifdef WIN32
 		::wcscpy_s(dest, src);
 #else
-		wcscpy(dest, src);
+		::wcscpy(dest, src);
 #endif
 	}
 
@@ -78,7 +78,11 @@ public:
 		}
 		size_t convert_size = 0;
 		wchar_t * pw = new wchar_t[char_num];
-		mbstowcs_s(&char_num, pw, char_num, strSrc.data(), _TRUNCATE);
+#ifdef WIN32
+		mbstowcs_s(&convert_size, pw, char_num, strSrc.data(), _TRUNCATE);
+#else
+		convert_size = mbstowcs(pw, strSrc.data(), char_num);
+#endif
 		val = pw;
 		delete[]pw;
 		setlocale(LC_ALL, curLocale.c_str());
@@ -95,7 +99,11 @@ public:
 		}
 		size_t char_num = strSrc.size() + 1;
 		size_t conver_num;
+#ifdef WIN32
 		wcstombs_s(&conver_num, NULL, 0, strSrc.data(), _TRUNCATE);
+#else
+		conver_num = wcstombs(NULL, strSrc.data(), 0);  
+#endif
 		char_num = conver_num + 1;
 		if (char_num <= 1)
 		{
@@ -106,8 +114,11 @@ public:
 		{
 			return val;
 		}
-		
+#ifdef WIN32		
 		wcstombs_s(&conver_num, pc, char_num, strSrc.data(), _TRUNCATE);
+#else
+		conver_num = wcstombs(pc, strSrc.data(), char_num);
+#endif
 		val = pc;
 		delete[]pc;
 		setlocale(LC_ALL, curLocale.c_str());
@@ -147,7 +158,7 @@ protected:
 #ifdef WIN32
 		vswprintf_s(szDest, sizeOfDest, szFmt, argList);
 #else
-		vsnwprintf(szDest, sizeOfDest, szFmt, argList);
+		::vswprintf(szDest, sizeOfDest, szFmt, argList);
 #endif
 
 		va_end(argList);

@@ -19,7 +19,7 @@ public:
 			minsize = nCpySize;
 		}
 
-		memcpy(pDest, pSrc, minsize);
+		::memcpy(pDest, pSrc, minsize);
 		//return memcpy(dest, src, min(sizeOfDest, sizeOfCopy));
 		return minsize;
 #endif
@@ -31,3 +31,4 @@ private:
 
 #define wmemcpy(pDest,nSizeOfDest,pSrc,nCpySize)	\
 	CWMemory::memcpy(pDest, nSizeOfDest, pSrc, nCpySize)
+
