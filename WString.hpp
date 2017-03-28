@@ -32,7 +32,7 @@ public:
 		strcpy_s(dest, dest_size, src);
 #else
 		size_t minsize = strlen(src);
-		if (minsize > dest_size-1)//sizeOfDest-1,×îºóÒ»Î»±ØÐëÎª¡®\0¡¯
+		if (minsize > dest_size-1)//sizeOfDest-1,ï¿½ï¿½ï¿½Ò»Î»ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½\0ï¿½ï¿½
 		{
 			minsize = dest_size - 1;
 		}
@@ -63,7 +63,7 @@ public:
 	static std::wstring c2w(string_ref_type strSrc)
 	{
 		string curLocale = setlocale(LC_ALL, NULL);   //curLocale="C"
-		setlocale(LC_ALL, "chs");
+
 		std::wstring val = L"";
 
 		if (nullptr == strSrc.data())
@@ -71,17 +71,26 @@ public:
 			return val;
 		}
 		
+		size_t convert_size = 0;
+
+#ifdef WIN32
+		setlocale(LC_ALL, "chs");
 		size_t char_num = strSrc.size()+1;
 		if (char_num <= 1)
 		{
 			return val;
 		}
-		size_t convert_size = 0;
 		wchar_t * pw = new wchar_t[char_num];
-#ifdef WIN32
 		mbstowcs_s(&convert_size, pw, char_num, strSrc.data(), _TRUNCATE);
 #else
+		setlocale(LC_ALL,"zh_CN.UTF-8");
+		size_t char_num = mbstowcs(NULL, strSrc.data(), 0);
+		wchar_t * pw = new wchar_t[char_num];
 		convert_size = mbstowcs(pw, strSrc.data(), char_num);
+		if ((size_t)-1 == convert_size)
+		{
+			return val;
+		}
 #endif
 		val = pw;
 		delete[]pw;
@@ -91,7 +100,7 @@ public:
 	static std::string w2c(wstring_ref_type strSrc)
 	{
 		string curLocale = setlocale(LC_ALL, NULL);   //curLocale="C"
-		setlocale(LC_ALL, "chs");
+
 		std::string val = "";
 		if (nullptr == strSrc.data())
 		{
@@ -100,8 +109,10 @@ public:
 		size_t char_num = strSrc.size() + 1;
 		size_t conver_num;
 #ifdef WIN32
+		setlocale(LC_ALL, "chs");
 		wcstombs_s(&conver_num, NULL, 0, strSrc.data(), _TRUNCATE);
 #else
+		setlocale(LC_ALL,"zh_CN.UTF-8");
 		conver_num = wcstombs(NULL, strSrc.data(), 0);  
 #endif
 		char_num = conver_num + 1;
@@ -129,7 +140,7 @@ protected:
 	{
 		va_list argList;
 
-		va_start(argList, szFmt);// È¡Í·¸ö²ÎÊýµØÖ·
+		va_start(argList, szFmt);// È¡Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
 
 // 		const int nBuffSize = 5000;
 // 		char szTemp[nBuffSize];
@@ -150,7 +161,7 @@ protected:
 	{
 		va_list argList;
 
-		va_start(argList, szFmt);// È¡Í·¸ö²ÎÊýµØÖ·
+		va_start(argList, szFmt);// È¡Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
 
 		// 		const int nBuffSize = 5000;
 		// 		char szTemp[nBuffSize];
